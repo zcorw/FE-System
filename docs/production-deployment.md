@@ -264,6 +264,9 @@ export HOST_LOG_DIR=/home/dev/FE/services/FE-telegram-bot/logs
 export HOST_DEPLOY_DIR=/home/dev/FE/services/FE-telegram-bot/deploy
 export HOST_ENV_FILE=/home/dev/FE/services/FE-telegram-bot/.env
 
+docker build -f Dockerfile.web -t "${WEB_IMAGE}" .
+docker build -f Dockerfile.bot -t "${BOT_IMAGE}" .
+docker build -f Dockerfile.web --target builder -t "${MIGRATE_IMAGE}" .
 docker compose --env-file .env -f deploy/docker-compose.yml --profile tools run --rm migrate
 docker compose --env-file .env -f deploy/docker-compose.yml up -d --build edge web bot
 docker compose --env-file .env -f deploy/docker-compose.yml ps
@@ -522,6 +525,9 @@ curl -fsS http://127.0.0.1:8000/health
 
 cd /home/dev/FE/services/FE-telegram-bot
 git pull
+docker build -f Dockerfile.web -t fe-telegram-bot-web:local .
+docker build -f Dockerfile.bot -t fe-telegram-bot-bot:local .
+docker build -f Dockerfile.web --target builder -t fe-telegram-bot-migrate:local .
 docker compose --env-file .env -f deploy/docker-compose.yml --profile tools run --rm migrate
 docker compose --env-file .env -f deploy/docker-compose.yml up -d --build edge web bot
 docker compose --env-file .env -f deploy/docker-compose.yml restart edge

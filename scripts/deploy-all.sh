@@ -88,6 +88,11 @@ export HOST_ASSETS_DIR="${HOST_ASSETS_DIR:-${TELEGRAM_BOT_DIR}/docs/assets}"
 export HOST_LOG_DIR="${HOST_LOG_DIR:-${TELEGRAM_BOT_DIR}/logs}"
 export HOST_DEPLOY_DIR="${HOST_DEPLOY_DIR:-${TELEGRAM_BOT_DIR}/deploy}"
 export HOST_ENV_FILE="${HOST_ENV_FILE:-${TELEGRAM_BOT_DIR}/.env}"
+require_file "${TELEGRAM_BOT_DIR}/Dockerfile.web"
+require_file "${TELEGRAM_BOT_DIR}/Dockerfile.bot"
+docker build -f Dockerfile.web -t "${WEB_IMAGE}" .
+docker build -f Dockerfile.bot -t "${BOT_IMAGE}" .
+docker build -f Dockerfile.web --target builder -t "${MIGRATE_IMAGE}" .
 docker compose --env-file .env -f deploy/docker-compose.yml --profile tools run --rm migrate
 docker compose --env-file .env -f deploy/docker-compose.yml up -d --build edge web bot
 docker compose --env-file .env -f deploy/docker-compose.yml restart edge

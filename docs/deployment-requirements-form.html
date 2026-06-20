@@ -1,0 +1,685 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Docker 部署补全表单</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f7f8fa;
+        --panel: #ffffff;
+        --panel-muted: #f0f4f8;
+        --text: #17202a;
+        --muted: #5e6b78;
+        --line: #d9e0e7;
+        --accent: #0f766e;
+        --accent-dark: #115e59;
+        --danger: #b42318;
+        --code: #18212f;
+        --radius: 8px;
+        --shadow: 0 1px 2px rgba(16, 24, 40, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        line-height: 1.5;
+      }
+
+      main {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 28px 0 40px;
+      }
+
+      header {
+        display: grid;
+        gap: 10px;
+        padding-bottom: 20px;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        font-size: 30px;
+        line-height: 1.18;
+        font-weight: 750;
+      }
+
+      h2 {
+        font-size: 18px;
+        line-height: 1.25;
+      }
+
+      h3 {
+        font-size: 15px;
+        line-height: 1.3;
+      }
+
+      .subhead {
+        max-width: 850px;
+        color: var(--muted);
+        font-size: 15px;
+      }
+
+      .status-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 4px;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        min-height: 28px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 4px 10px;
+        background: var(--panel);
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(360px, 0.9fr);
+        gap: 18px;
+        align-items: start;
+      }
+
+      form,
+      .output-panel {
+        display: grid;
+        gap: 14px;
+      }
+
+      .section {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--panel);
+        box-shadow: var(--shadow);
+      }
+
+      .section-header {
+        display: grid;
+        gap: 4px;
+        border-bottom: 1px solid var(--line);
+        padding: 16px;
+      }
+
+      .section-header p {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .fields {
+        display: grid;
+        gap: 14px;
+        padding: 16px;
+      }
+
+      .field {
+        display: grid;
+        gap: 6px;
+      }
+
+      label {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        color: var(--text);
+        font-size: 14px;
+        font-weight: 650;
+      }
+
+      label span {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: #ffffff;
+        color: var(--text);
+        font: inherit;
+        font-size: 14px;
+        outline: none;
+        transition:
+          border-color 120ms ease,
+          box-shadow 120ms ease;
+      }
+
+      input {
+        min-height: 42px;
+        padding: 9px 11px;
+      }
+
+      textarea {
+        min-height: 132px;
+        resize: vertical;
+        padding: 10px 11px;
+        font-family:
+          ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          Monaco,
+          Consolas,
+          "Liberation Mono",
+          monospace;
+        line-height: 1.45;
+      }
+
+      input:focus,
+      textarea:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14);
+      }
+
+      .hint {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .actions {
+        position: sticky;
+        bottom: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: rgba(255, 255, 255, 0.94);
+        padding: 12px;
+        box-shadow: 0 -2px 14px rgba(16, 24, 40, 0.08);
+        backdrop-filter: blur(8px);
+      }
+
+      button,
+      .download-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 40px;
+        border-radius: 6px;
+        border: 1px solid transparent;
+        padding: 8px 13px;
+        font: inherit;
+        font-size: 14px;
+        font-weight: 650;
+        cursor: pointer;
+        text-decoration: none;
+      }
+
+      button.primary {
+        background: var(--accent);
+        color: #ffffff;
+      }
+
+      button.primary:hover {
+        background: var(--accent-dark);
+      }
+
+      button.secondary,
+      .download-link {
+        border-color: var(--line);
+        background: #ffffff;
+        color: var(--text);
+      }
+
+      button.secondary:hover,
+      .download-link:hover {
+        background: var(--panel-muted);
+      }
+
+      .output-panel {
+        position: sticky;
+        top: 16px;
+      }
+
+      .output-card {
+        display: grid;
+        gap: 12px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--panel);
+        box-shadow: var(--shadow);
+        padding: 16px;
+      }
+
+      .prompt-output {
+        min-height: 520px;
+        background: var(--code);
+        color: #eef5ff;
+        border-color: #303b4f;
+      }
+
+      .meta {
+        display: grid;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .warning {
+        border-left: 3px solid var(--danger);
+        background: #fff4f2;
+        color: #8f1f15;
+        padding: 10px 12px;
+        border-radius: 6px;
+        font-size: 13px;
+      }
+
+      .copy-state {
+        min-height: 20px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      @media (max-width: 940px) {
+        main {
+          width: min(100% - 24px, 760px);
+          padding-top: 20px;
+        }
+
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        .output-panel {
+          position: static;
+        }
+
+        .prompt-output {
+          min-height: 360px;
+        }
+      }
+
+      @media (max-width: 520px) {
+        h1 {
+          font-size: 24px;
+        }
+
+        label {
+          display: grid;
+          gap: 2px;
+        }
+
+        label span {
+          white-space: normal;
+        }
+
+        button,
+        .download-link {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Docker 部署补全表单</h1>
+        <p class="subhead">
+          填写当前部署缺失的环境变量和文档内容，页面会生成一段可直接交给 Codex 的 prompt，用于创建剩余文件并继续部署验证。
+        </p>
+        <div class="status-row" aria-label="当前部署状态">
+          <span class="badge">question-bank: healthy</span>
+          <span class="badge">telegram web/edge: running</span>
+          <span class="badge">daily runner: waiting for references</span>
+        </div>
+      </header>
+
+      <div class="layout">
+        <form id="requirements-form">
+          <section class="section" aria-labelledby="telegram-heading">
+            <div class="section-header">
+              <h2 id="telegram-heading">FE-telegram-bot</h2>
+              <p>这些值用于生成生产 `.env`，并让 bot 容器通过 Telegram 初始化和 webhook 校验。</p>
+            </div>
+            <div class="fields">
+              <div class="field">
+                <label for="telegram-public-base-url">PUBLIC_BASE_URL <span>必填</span></label>
+                <input id="telegram-public-base-url" data-key="telegram.publicBaseUrl" placeholder="https://example.com" autocomplete="off" />
+              </div>
+              <div class="field">
+                <label for="telegram-openai-key">OPENAI_API_KEY <span>必填</span></label>
+                <input id="telegram-openai-key" data-key="telegram.openaiApiKey" placeholder="sk-..." autocomplete="off" />
+                <p class="hint">用于 Telegram scope parsing。生成 prompt 后请注意不要把密钥提交进 Git。</p>
+              </div>
+              <div class="field">
+                <label for="telegram-bot-token">TELEGRAM_BOT_TOKEN <span>必填</span></label>
+                <input id="telegram-bot-token" data-key="telegram.botToken" placeholder="123456:ABC..." autocomplete="off" />
+              </div>
+              <div class="field">
+                <label for="telegram-path-secret">TELEGRAM_WEBHOOK_PATH_SECRET <span>必填</span></label>
+                <input id="telegram-path-secret" data-key="telegram.pathSecret" placeholder="random-path-secret" autocomplete="off" />
+              </div>
+              <div class="field">
+                <label for="telegram-header-secret">TELEGRAM_WEBHOOK_SECRET_TOKEN <span>必填</span></label>
+                <input id="telegram-header-secret" data-key="telegram.secretToken" placeholder="random-header-secret" autocomplete="off" />
+              </div>
+              <div class="field">
+                <label for="telegram-header-alias">TELEGRAM_WEBHOOK_HEADER_SECRET <span>可选</span></label>
+                <input id="telegram-header-alias" data-key="telegram.headerAlias" placeholder="默认使用 TELEGRAM_WEBHOOK_SECRET_TOKEN" autocomplete="off" />
+              </div>
+            </div>
+          </section>
+
+          <section class="section" aria-labelledby="daily-env-heading">
+            <div class="section-header">
+              <h2 id="daily-env-heading">FE-Daily-Runner 环境变量</h2>
+              <p>这些值用于真实生成每日页面和可选 Telegram 通知。</p>
+            </div>
+            <div class="fields">
+              <div class="field">
+                <label for="daily-openai-key">OPENAI_API_KEY <span>必填</span></label>
+                <input id="daily-openai-key" data-key="daily.openaiApiKey" placeholder="sk-..." autocomplete="off" />
+              </div>
+              <div class="field">
+                <label for="daily-page-base-url">PAGE_BASE_URL <span>必填</span></label>
+                <input id="daily-page-base-url" data-key="daily.pageBaseUrl" placeholder="https://example.com/daily" autocomplete="off" />
+              </div>
+              <div class="field">
+                <label for="daily-telegram-token">TELEGRAM_BOT_TOKEN <span>通知时必填</span></label>
+                <input id="daily-telegram-token" data-key="daily.telegramBotToken" placeholder="123456:ABC..." autocomplete="off" />
+              </div>
+              <div class="field">
+                <label for="daily-chat-id">TELEGRAM_CHAT_ID <span>通知时必填</span></label>
+                <input id="daily-chat-id" data-key="daily.telegramChatId" placeholder="123456789" autocomplete="off" />
+              </div>
+            </div>
+          </section>
+
+          <section class="section" aria-labelledby="daily-files-heading">
+            <div class="section-header">
+              <h2 id="daily-files-heading">FE-Daily-Runner 输入文档</h2>
+              <p>这些内容会生成到 `FE-Daily-Runner/references/`，用于每日学习页面生成。</p>
+            </div>
+            <div class="fields">
+              <div class="field">
+                <label for="study-plan">references/legacy-project/june-study-plan.md <span>必填</span></label>
+                <textarea id="study-plan" data-key="daily.studyPlan" placeholder="粘贴学习计划 Markdown"></textarea>
+              </div>
+              <div class="field">
+                <label for="weak-points">references/personal-context/weak_points.md <span>必填</span></label>
+                <textarea id="weak-points" data-key="daily.weakPoints" placeholder="粘贴薄弱点 Markdown"></textarea>
+              </div>
+              <div class="field">
+                <label for="mistake-log">references/personal-context/mistake_log.md <span>必填</span></label>
+                <textarea id="mistake-log" data-key="daily.mistakeLog" placeholder="粘贴错题记录 Markdown"></textarea>
+              </div>
+              <div class="field">
+                <label for="progress">references/personal-context/progress.md <span>必填</span></label>
+                <textarea id="progress" data-key="daily.progress" placeholder="粘贴学习进度 Markdown"></textarea>
+              </div>
+            </div>
+          </section>
+
+          <div class="actions">
+            <button class="primary" type="button" id="generate-button">生成 Codex Prompt</button>
+            <button class="secondary" type="button" id="copy-button">复制 Prompt</button>
+            <a class="download-link" id="download-link" href="#" download="codex-deployment-completion-prompt.md">下载 Prompt</a>
+            <button class="secondary" type="reset" id="reset-button">清空表单</button>
+          </div>
+        </form>
+
+        <aside class="output-panel" aria-labelledby="prompt-heading">
+          <div class="output-card">
+            <div class="meta">
+              <h2 id="prompt-heading">生成结果</h2>
+              <p>先填写左侧内容，再生成 prompt。生成内容会包含文件路径、环境变量和部署验证命令。</p>
+            </div>
+            <div class="warning">
+              这里会显示明文密钥。请只在本机使用，生成后不要把包含真实密钥的 prompt 提交到仓库。
+            </div>
+            <textarea class="prompt-output" id="prompt-output" spellcheck="false" readonly></textarea>
+            <p class="copy-state" id="copy-state" role="status" aria-live="polite"></p>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <script>
+      const form = document.querySelector("#requirements-form");
+      const output = document.querySelector("#prompt-output");
+      const copyState = document.querySelector("#copy-state");
+      const downloadLink = document.querySelector("#download-link");
+      const generateButton = document.querySelector("#generate-button");
+      const copyButton = document.querySelector("#copy-button");
+
+      const requiredKeys = [
+        "telegram.publicBaseUrl",
+        "telegram.openaiApiKey",
+        "telegram.botToken",
+        "telegram.pathSecret",
+        "telegram.secretToken",
+        "daily.openaiApiKey",
+        "daily.pageBaseUrl",
+        "daily.studyPlan",
+        "daily.weakPoints",
+        "daily.mistakeLog",
+        "daily.progress",
+      ];
+
+      function collectValues() {
+        const values = {};
+        form.querySelectorAll("[data-key]").forEach((field) => {
+          values[field.dataset.key] = field.value.trim();
+        });
+        return values;
+      }
+
+      function missingRequired(values) {
+        return requiredKeys.filter((key) => !values[key]);
+      }
+
+      function block(title, content) {
+        return ["", `## ${title}`, "", content || "_未填写_", ""].join("\n");
+      }
+
+      function fenced(path, content) {
+        return [`### ${path}`, "", "```", content || "", "```"].join("\n");
+      }
+
+      function envLine(name, value) {
+        return `${name}=${value || ""}`;
+      }
+
+      function buildTelegramEnv(values) {
+        const webhookHeaderSecret = values["telegram.headerAlias"] || values["telegram.secretToken"];
+        return [
+          envLine("PUBLIC_BASE_URL", values["telegram.publicBaseUrl"]),
+          envLine("OPENAI_API_KEY", values["telegram.openaiApiKey"]),
+          envLine("TELEGRAM_BOT_TOKEN", values["telegram.botToken"]),
+          envLine("TELEGRAM_WEBHOOK_PATH_SECRET", values["telegram.pathSecret"]),
+          envLine("TELEGRAM_WEBHOOK_SECRET_TOKEN", values["telegram.secretToken"]),
+          envLine("TELEGRAM_WEBHOOK_HEADER_SECRET", webhookHeaderSecret),
+          envLine("TELEGRAM_AUTO_SET_WEBHOOK", "true"),
+          envLine("EDGE_HOST", "127.0.0.1"),
+          envLine("EDGE_PORT", "3100"),
+          envLine("QUESTION_BANK_MODE", "sqlite"),
+        ].join("\n");
+      }
+
+      function buildDailyEnv(values) {
+        return [
+          envLine("TZ", "Asia/Tokyo"),
+          envLine("QUESTION_BANK_SERVICE_URL", "http://question-bank-runtime:8000"),
+          envLine("QUESTION_BANK_TIMEOUT_SECONDS", "20"),
+          envLine("QUESTION_BANK_RETRY_COUNT", "2"),
+          "",
+          envLine("OPENAI_API_KEY", values["daily.openaiApiKey"]),
+          envLine("OPENAI_MODEL", "gpt-5.5"),
+          envLine("OPENAI_REASONING_EFFORT", "low"),
+          envLine("OPENAI_TEXT_VERBOSITY", "medium"),
+          "",
+          envLine("OUTPUT_DIR", "site"),
+          envLine("TEMPLATE_DIR", "templates"),
+          envLine("MARKDOWN_COMPAT_ENABLED", "false"),
+          envLine("MARKDOWN_OUTPUT_DIR", "docs"),
+          envLine("ASSET_PROXY_BASE_PATH", "/assets/fe-siken"),
+          envLine("PAGE_BASE_URL", values["daily.pageBaseUrl"]),
+          envLine("EXISTING_PAGE_POLICY", "fail"),
+          "",
+          envLine("STUDY_PLAN_PATH", "references/legacy-project/june-study-plan.md"),
+          envLine("WEAK_POINTS_PATH", "references/personal-context/weak_points.md"),
+          envLine("MISTAKE_LOG_PATH", "references/personal-context/mistake_log.md"),
+          envLine("PROGRESS_CONTEXT_PATH", "references/personal-context/progress.md"),
+          "",
+          envLine("TELEGRAM_BOT_TOKEN", values["daily.telegramBotToken"]),
+          envLine("TELEGRAM_CHAT_ID", values["daily.telegramChatId"]),
+        ].join("\n");
+      }
+
+      function buildPrompt(values) {
+        const missing = missingRequired(values);
+        const missingText = missing.length
+          ? `\n\n注意：以下表单项仍为空，请先向我确认后再写文件：\n${missing.map((item) => `- ${item}`).join("\n")}\n`
+          : "";
+
+        return `请在 /home/dev/FE 下继续完成 Docker 部署所需的剩余文件和配置。不要提交真实密钥，不要把包含密钥的文件加入 Git。${missingText}
+
+目标：
+1. 为 FE-telegram-bot 生成生产运行所需的 .env 文件。
+2. 为 FE-Daily-Runner 创建缺失的 references 输入文档和 .env 文件。
+3. 重新执行 Docker 部署验证，确认 question-bank、telegram web/edge/bot、Daily Runner 均能按文档运行。
+
+请创建或更新以下文件：
+
+${fenced("FE-telegram-bot/.env", buildTelegramEnv(values))}
+
+${fenced("FE-Daily-Runner/.env", buildDailyEnv(values))}
+
+${fenced("FE-Daily-Runner/references/legacy-project/june-study-plan.md", values["daily.studyPlan"])}
+
+${fenced("FE-Daily-Runner/references/personal-context/weak_points.md", values["daily.weakPoints"])}
+
+${fenced("FE-Daily-Runner/references/personal-context/mistake_log.md", values["daily.mistakeLog"])}
+
+${fenced("FE-Daily-Runner/references/personal-context/progress.md", values["daily.progress"])}
+
+部署和验证要求：
+
+1. 确认 Docker 网络存在：
+\`\`\`bash
+docker network inspect fe-shared >/dev/null 2>&1 || docker network create fe-shared
+\`\`\`
+
+2. 确认 question-bank runtime 仍健康：
+\`\`\`bash
+cd /home/dev/FE/services/fe-question-bank-service
+docker compose up -d --build question-bank-runtime
+curl -fsS http://127.0.0.1:8000/health
+\`\`\`
+
+3. 重新启动 FE-telegram-bot：
+\`\`\`bash
+cd /home/dev/FE/services/FE-telegram-bot
+export WEB_IMAGE=fe-telegram-bot-web:local
+export BOT_IMAGE=fe-telegram-bot-bot:local
+export MIGRATE_IMAGE=fe-telegram-bot-migrate:local
+export HOST_CONFIG_DIR=/home/dev/FE/services/FE-telegram-bot/config
+export HOST_DATA_DIR=/home/dev/FE/services/FE-telegram-bot/data
+export HOST_ASSETS_DIR=/home/dev/FE/services/FE-telegram-bot/docs/assets
+export HOST_LOG_DIR=/home/dev/FE/services/FE-telegram-bot/logs
+export HOST_DEPLOY_DIR=/home/dev/FE/services/FE-telegram-bot/deploy
+export HOST_ENV_FILE=/home/dev/FE/services/FE-telegram-bot/.env
+docker compose --env-file .env -f deploy/docker-compose.yml --profile tools run --rm migrate
+docker compose --env-file .env -f deploy/docker-compose.yml up -d edge web bot
+docker compose --env-file .env -f deploy/docker-compose.yml ps
+curl -fsS http://127.0.0.1:3100/quiz/invalid-token >/tmp/fe-quiz-smoke.html
+wc -c /tmp/fe-quiz-smoke.html
+\`\`\`
+
+4. 构建并验证 FE-Daily-Runner：
+\`\`\`bash
+cd /home/dev/FE/services/FE-Daily-Runner
+docker compose build fe-daily-runner
+docker compose run --rm fe-daily-runner python scripts/daily_publish.py --validate-config
+docker compose run --rm fe-daily-runner python scripts/daily_publish.py --health-check
+docker compose run --rm fe-daily-runner python scripts/daily_publish.py --today --dry-run
+\`\`\`
+
+5. 更新 /home/dev/FE/docs/deployment-missing-requirements.md，把已补齐的项目标为完成，并记录最终容器状态和验证命令结果。
+
+完成后请汇报：
+- 修改和创建了哪些文件
+- 哪些 Docker 服务正在运行
+- 每条验证命令的结果
+- 是否还有任何缺失项`;
+      }
+
+      function refreshDownloadLink(text) {
+        const blob = new Blob([text], { type: "text/markdown;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const previous = downloadLink.dataset.url;
+        if (previous) {
+          URL.revokeObjectURL(previous);
+        }
+        downloadLink.href = url;
+        downloadLink.dataset.url = url;
+      }
+
+      function generatePrompt() {
+        const values = collectValues();
+        const prompt = buildPrompt(values);
+        output.value = prompt;
+        refreshDownloadLink(prompt);
+        const missing = missingRequired(values);
+        copyState.textContent = missing.length
+          ? `已生成，但还有 ${missing.length} 个必填项为空。`
+          : "已生成 prompt。";
+      }
+
+      async function copyPrompt() {
+        if (!output.value.trim()) {
+          generatePrompt();
+        }
+        try {
+          await navigator.clipboard.writeText(output.value);
+          copyState.textContent = "已复制到剪贴板。";
+        } catch (error) {
+          output.focus();
+          output.select();
+          copyState.textContent = "浏览器拒绝自动复制，请手动复制文本框内容。";
+        }
+      }
+
+      generateButton.addEventListener("click", generatePrompt);
+      copyButton.addEventListener("click", copyPrompt);
+      form.addEventListener("reset", () => {
+        window.setTimeout(() => {
+          output.value = "";
+          copyState.textContent = "";
+          refreshDownloadLink("");
+        }, 0);
+      });
+
+      refreshDownloadLink("");
+    </script>
+  </body>
+</html>

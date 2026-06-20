@@ -1,0 +1,10 @@
+[Unit]
+Description=Run FE Daily Runner every morning
+
+[Timer]
+OnCalendar=*-*-* 06:15:00
+Persistent=true
+Unit=fe-daily-runner.service
+
+[Install]
+WantedBy=timers.target

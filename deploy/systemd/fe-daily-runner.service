@@ -1,0 +1,10 @@
+[Unit]
+Description=FE Daily Runner publish and Telegram notify
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/dev/FE/services/FE-Daily-Runner
+ExecStart=/usr/bin/docker compose run --rm -e EXISTING_PAGE_POLICY=overwrite fe-daily-runner python scripts/daily_publish.py --today --notify

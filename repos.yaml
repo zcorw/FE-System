@@ -1,0 +1,23 @@
+version: 1
+
+services:
+  - name: fe-question-bank-service
+    path: services/fe-question-bank-service
+    repo: git@github.com:zcorw/fe-question-bank-service.git
+    branch: feat/question-bank-service
+    role: question-bank-runtime
+    deploy_order: 1
+
+  - name: FE-telegram-bot
+    path: services/FE-telegram-bot
+    repo: git@github.com:zcorw/fe-siken-quiz-bot.git
+    branch: main
+    role: telegram-web-edge-bot
+    deploy_order: 2
+
+  - name: FE-Daily-Runner
+    path: services/FE-Daily-Runner
+    repo: git@github.com:zcorw/FE-Daily-Runner-Python.git
+    branch: feat/runtime-question-explanations
+    role: daily-page-generator
+    deploy_order: 3

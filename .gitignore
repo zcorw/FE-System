@@ -1,0 +1,15 @@
+# Root-level deployment repository ignores.
+.env
+*.local
+*.key
+*.pem
+*.sqlite-shm
+*.sqlite-wal
+
+# Service repositories are managed separately and must not be committed here.
+services/
+
+# Local editor and OS files.
+.DS_Store
+.idea/
+.vscode/

@@ -263,7 +263,13 @@ export HOST_ASSETS_DIR=/home/dev/FE/services/FE-telegram-bot/docs/assets
 export HOST_LOG_DIR=/home/dev/FE/services/FE-telegram-bot/logs
 export HOST_DEPLOY_DIR=/home/dev/FE/services/FE-telegram-bot/deploy
 export HOST_ENV_FILE=/home/dev/FE/services/FE-telegram-bot/.env
+export DEPLOY_ROOT=/home/dev/FE/services/FE-telegram-bot
+export PROJECT_DIR=/home/dev/FE/services/FE-telegram-bot
+export ENV_FILE=/home/dev/FE/services/FE-telegram-bot/.env
+export APP_RUN_UID="$(id -u)"
+export APP_RUN_GID="$(id -g)"
 
+sh ./deploy/scripts/init-runtime.sh
 docker build -f Dockerfile.web -t "${WEB_IMAGE}" .
 docker build -f Dockerfile.bot -t "${BOT_IMAGE}" .
 docker build -f Dockerfile.web --target builder -t "${MIGRATE_IMAGE}" .
@@ -525,6 +531,12 @@ curl -fsS http://127.0.0.1:8000/health
 
 cd /home/dev/FE/services/FE-telegram-bot
 git pull
+export DEPLOY_ROOT=/home/dev/FE/services/FE-telegram-bot
+export PROJECT_DIR=/home/dev/FE/services/FE-telegram-bot
+export ENV_FILE=/home/dev/FE/services/FE-telegram-bot/.env
+export APP_RUN_UID="$(id -u)"
+export APP_RUN_GID="$(id -g)"
+sh ./deploy/scripts/init-runtime.sh
 docker build -f Dockerfile.web -t fe-telegram-bot-web:local .
 docker build -f Dockerfile.bot -t fe-telegram-bot-bot:local .
 docker build -f Dockerfile.web --target builder -t fe-telegram-bot-migrate:local .

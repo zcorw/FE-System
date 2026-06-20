@@ -88,8 +88,15 @@ export HOST_ASSETS_DIR="${HOST_ASSETS_DIR:-${TELEGRAM_BOT_DIR}/docs/assets}"
 export HOST_LOG_DIR="${HOST_LOG_DIR:-${TELEGRAM_BOT_DIR}/logs}"
 export HOST_DEPLOY_DIR="${HOST_DEPLOY_DIR:-${TELEGRAM_BOT_DIR}/deploy}"
 export HOST_ENV_FILE="${HOST_ENV_FILE:-${TELEGRAM_BOT_DIR}/.env}"
+export DEPLOY_ROOT="${DEPLOY_ROOT:-${TELEGRAM_BOT_DIR}}"
+export PROJECT_DIR="${PROJECT_DIR:-${TELEGRAM_BOT_DIR}}"
+export ENV_FILE="${ENV_FILE:-${TELEGRAM_BOT_DIR}/.env}"
+export APP_RUN_UID="${APP_RUN_UID:-$(id -u)}"
+export APP_RUN_GID="${APP_RUN_GID:-$(id -g)}"
 require_file "${TELEGRAM_BOT_DIR}/Dockerfile.web"
 require_file "${TELEGRAM_BOT_DIR}/Dockerfile.bot"
+require_file "${TELEGRAM_BOT_DIR}/deploy/scripts/init-runtime.sh"
+sh ./deploy/scripts/init-runtime.sh
 docker build -f Dockerfile.web -t "${WEB_IMAGE}" .
 docker build -f Dockerfile.bot -t "${BOT_IMAGE}" .
 docker build -f Dockerfile.web --target builder -t "${MIGRATE_IMAGE}" .

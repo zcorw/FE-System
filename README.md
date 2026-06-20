@@ -71,6 +71,8 @@ docs/production-deployment.md
 - `docs/production-deployment.md`: full production deployment guide.
 - `docs/deployment-missing-requirements.md`: last deployment validation status.
 - `scripts/pull-repos.sh`: clone or update all service repositories.
+- `scripts/install-assets.sh`: install `deploy/artifacts/public.zip` into the
+  question-bank `HOST_ASSET_DIR` from its `.env`.
 - `scripts/deploy-all.sh`: deploy and validate all Docker services.
 
 ## Secret Handling

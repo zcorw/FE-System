@@ -44,6 +44,11 @@ require_file "${DAILY_RUNNER_DIR}/.env"
 echo "==> Ensuring shared Docker network"
 docker network inspect fe-shared >/dev/null 2>&1 || docker network create fe-shared
 
+echo "==> Installing question image assets"
+"${ROOT_DIR}/scripts/install-assets.sh" \
+  "${QUESTION_BANK_DIR}/.env" \
+  "${ROOT_DIR}/deploy/artifacts/public.zip"
+
 echo "==> Deploying question-bank runtime"
 cd "${QUESTION_BANK_DIR}"
 docker compose --env-file .env up -d --build question-bank-runtime

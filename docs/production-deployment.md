@@ -124,6 +124,19 @@ Required image asset root:
 
 Back up the SQLite database, keyword JSON files, and image assets together.
 
+If using the bundled artifact, install question image assets from the root
+deployment repository:
+
+```bash
+cd /home/dev/FE
+./scripts/install-assets.sh \
+  services/fe-question-bank-service/.env \
+  deploy/artifacts/public.zip
+```
+
+The script reads `HOST_ASSET_DIR` from the provided `.env` file and copies the
+contents of `assets/fe-siken/` from the zip archive into that target directory.
+
 ### 3.2 `FE-telegram-bot/.env`
 
 Start from:
@@ -427,6 +440,9 @@ Run after every deployment:
 
 ```bash
 docker network inspect fe-shared >/dev/null
+
+cd /home/dev/FE
+./scripts/install-assets.sh services/fe-question-bank-service/.env deploy/artifacts/public.zip
 
 cd /home/dev/FE/services/fe-question-bank-service
 docker compose --env-file .env ps

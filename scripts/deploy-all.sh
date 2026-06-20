@@ -36,6 +36,28 @@ env_value() {
   fi
 }
 
+wait_for_http() {
+  local url="$1"
+  local service="$2"
+  local attempts="${3:-30}"
+  local delay_seconds="${4:-2}"
+  local attempt
+
+  for attempt in $(seq 1 "${attempts}"); do
+    if curl -fsS "${url}"; then
+      echo
+      return 0
+    fi
+    echo "Waiting for ${service} health check (${attempt}/${attempts})..." >&2
+    sleep "${delay_seconds}"
+  done
+
+  echo "ERROR: ${service} did not become healthy at ${url}" >&2
+  docker compose --env-file .env ps >&2 || true
+  docker compose --env-file .env logs --tail=120 "${service}" >&2 || true
+  return 1
+}
+
 echo "==> Checking required environment files"
 require_file "${QUESTION_BANK_DIR}/.env"
 require_file "${TELEGRAM_BOT_DIR}/.env"
@@ -53,8 +75,7 @@ echo "==> Deploying question-bank runtime"
 cd "${QUESTION_BANK_DIR}"
 docker compose --env-file .env up -d --build question-bank-runtime
 QUESTION_BANK_RUNTIME_PORT="$(env_value .env QUESTION_BANK_RUNTIME_PORT 8000)"
-curl -fsS "http://127.0.0.1:${QUESTION_BANK_RUNTIME_PORT}/health"
-echo
+wait_for_http "http://127.0.0.1:${QUESTION_BANK_RUNTIME_PORT}/health" question-bank-runtime
 
 echo "==> Deploying Telegram web, bot, and edge"
 cd "${TELEGRAM_BOT_DIR}"

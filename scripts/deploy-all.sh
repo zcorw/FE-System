@@ -23,6 +23,7 @@ env_value() {
   value="$(awk -F= -v key="${key}" '
     $0 !~ /^[[:space:]]*#/ && $1 == key {
       sub(/^[^=]*=/, "")
+      gsub(/^[[:space:]]+|[[:space:]]+$/, "")
       gsub(/^"|"$/, "")
       gsub(/^'\''|'\''$/, "")
       print
@@ -82,11 +83,11 @@ cd "${TELEGRAM_BOT_DIR}"
 export WEB_IMAGE="${WEB_IMAGE:-fe-telegram-bot-web:local}"
 export BOT_IMAGE="${BOT_IMAGE:-fe-telegram-bot-bot:local}"
 export MIGRATE_IMAGE="${MIGRATE_IMAGE:-fe-telegram-bot-migrate:local}"
-export HOST_CONFIG_DIR="${HOST_CONFIG_DIR:-${TELEGRAM_BOT_DIR}/config}"
-export HOST_DATA_DIR="${HOST_DATA_DIR:-${TELEGRAM_BOT_DIR}/data}"
-export HOST_ASSETS_DIR="${HOST_ASSETS_DIR:-${TELEGRAM_BOT_DIR}/docs/assets}"
-export HOST_LOG_DIR="${HOST_LOG_DIR:-${TELEGRAM_BOT_DIR}/logs}"
-export HOST_DEPLOY_DIR="${HOST_DEPLOY_DIR:-${TELEGRAM_BOT_DIR}/deploy}"
+export HOST_CONFIG_DIR="${HOST_CONFIG_DIR:-$(env_value .env HOST_CONFIG_DIR "${TELEGRAM_BOT_DIR}/config")}"
+export HOST_DATA_DIR="${HOST_DATA_DIR:-$(env_value .env HOST_DATA_DIR "${TELEGRAM_BOT_DIR}/data")}"
+export HOST_ASSETS_DIR="${HOST_ASSETS_DIR:-$(env_value .env HOST_ASSETS_DIR "${TELEGRAM_BOT_DIR}/docs/assets")}"
+export HOST_LOG_DIR="${HOST_LOG_DIR:-$(env_value .env HOST_LOG_DIR "${TELEGRAM_BOT_DIR}/logs")}"
+export HOST_DEPLOY_DIR="${HOST_DEPLOY_DIR:-$(env_value .env HOST_DEPLOY_DIR "${TELEGRAM_BOT_DIR}/deploy")}"
 export HOST_ENV_FILE="${HOST_ENV_FILE:-${TELEGRAM_BOT_DIR}/.env}"
 export DEPLOY_ROOT="${DEPLOY_ROOT:-${TELEGRAM_BOT_DIR}}"
 export PROJECT_DIR="${PROJECT_DIR:-${TELEGRAM_BOT_DIR}}"

@@ -257,10 +257,10 @@ cd /home/dev/FE/services/FE-telegram-bot
 export WEB_IMAGE=fe-telegram-bot-web:local
 export BOT_IMAGE=fe-telegram-bot-bot:local
 export MIGRATE_IMAGE=fe-telegram-bot-migrate:local
-export HOST_CONFIG_DIR=/home/dev/FE/services/FE-telegram-bot/config
-export HOST_DATA_DIR=/home/dev/FE/services/FE-telegram-bot/data
+export HOST_CONFIG_DIR=/opt/fe-quiz-bot/config
+export HOST_DATA_DIR=/opt/fe-quiz-bot/data
 export HOST_ASSETS_DIR=/home/dev/FE/services/FE-telegram-bot/docs/assets
-export HOST_LOG_DIR=/home/dev/FE/services/FE-telegram-bot/logs
+export HOST_LOG_DIR=/opt/fe-quiz-bot/logs
 export HOST_DEPLOY_DIR=/home/dev/FE/services/FE-telegram-bot/deploy
 export HOST_ENV_FILE=/home/dev/FE/services/FE-telegram-bot/.env
 export DEPLOY_ROOT=/home/dev/FE/services/FE-telegram-bot
@@ -534,6 +534,9 @@ git pull
 export DEPLOY_ROOT=/home/dev/FE/services/FE-telegram-bot
 export PROJECT_DIR=/home/dev/FE/services/FE-telegram-bot
 export ENV_FILE=/home/dev/FE/services/FE-telegram-bot/.env
+export HOST_CONFIG_DIR=/opt/fe-quiz-bot/config
+export HOST_DATA_DIR=/opt/fe-quiz-bot/data
+export HOST_LOG_DIR=/opt/fe-quiz-bot/logs
 export APP_RUN_UID="$(id -u)"
 export APP_RUN_GID="$(id -g)"
 sh ./deploy/scripts/init-runtime.sh

@@ -4,17 +4,17 @@ A modular learning platform for Japan's **Fundamental Information Technology Eng
 
 The system combines a shared FE question-bank service, an interactive web quiz application with Telegram integration, and an AI-assisted daily study workflow.
 
-This repository, **FE-System**, is the integration and operations hub for the complete platform. It does not replace the individual application repositories; instead, it brings them together for deployment and operation on a single VPS.
+This repository, **FE-Study-System**, is the integration and operations hub for the complete platform. It does not replace the individual application repositories; instead, it brings them together for deployment and operation on a single VPS.
 
 ## Architecture
 
 ```mermaid
 flowchart TD
-    SYS["FE-System<br/>Deployment / Operations / Integration"]
+    SYS["FE-Study-System<br/>Deployment / Operations / Integration"]
 
     QB["fe-question-bank-service<br/>Question Bank Runtime<br/>FastAPI + SQLite"]
-    QUIZ["fe-siken-quiz-bot<br/>Interactive Quiz App<br/>Next.js + TypeScript + Telegram"]
-    DAILY["FE-Daily-Runner-Python<br/>Daily Study Generator<br/>Python + OpenAI"]
+    QUIZ["fe-quiz-app<br/>Interactive Quiz App<br/>Next.js + TypeScript + Telegram"]
+    DAILY["fe-daily-runner<br/>Daily Study Generator<br/>Python + OpenAI"]
 
     SYS -. deploys / operates .-> QB
     SYS -. deploys / operates .-> QUIZ
@@ -33,9 +33,9 @@ Both the interactive quiz application and the daily study generator consume the 
 | Repository                                                                    | Role                                                                                                  | Main Stack                                   |
 | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------- |
 | [fe-question-bank-service](https://github.com/zcorw/fe-question-bank-service) | Shared FE question-bank runtime providing question data, metadata, keyword mappings, and image assets | FastAPI, SQLite, Docker                      |
-| [fe-siken-quiz-bot](https://github.com/zcorw/fe-siken-quiz-bot)               | Interactive FE practice application with browser-based quizzes and Telegram integration               | Next.js, React, TypeScript, Telegram, SQLite |
-| [FE-Daily-Runner-Python](https://github.com/zcorw/FE-Daily-Runner-Python)     | Generates personalized daily FE study pages using question-bank data and OpenAI                       | Python, OpenAI API, Jinja2, Docker           |
-| **FE-System**                                                                 | Deployment, integration, host configuration, and operational scripts for the complete platform        | Docker, Nginx, systemd, Shell                |
+| [fe-quiz-app](https://github.com/zcorw/fe-quiz-app)               | Interactive FE practice application with browser-based quizzes and Telegram integration               | Next.js, React, TypeScript, Telegram, SQLite |
+| [fe-daily-runner](https://github.com/zcorw/fe-daily-runner)     | Generates personalized daily FE study pages using question-bank data and OpenAI                       | Python, OpenAI API, Jinja2, Docker           |
+| **FE-Study-System**                                                                 | Deployment, integration, host configuration, and operational scripts for the complete platform        | Docker, Nginx, systemd, Shell                |
 
 ## How the Components Work Together
 
@@ -61,7 +61,7 @@ This keeps question-bank ownership separate from the applications that consume t
 
 ### 2. Interactive Quiz Application
 
-`fe-siken-quiz-bot` provides the interactive practice experience.
+`fe-quiz-app` provides the interactive practice experience.
 
 Users can select a practice scope through Telegram, open a generated quiz URL, answer questions in the browser, and review scores, explanations, and previous mistakes.
 
@@ -69,7 +69,7 @@ The application can retrieve FE question data from `fe-question-bank-service` in
 
 ### 3. Daily Study Generator
 
-`FE-Daily-Runner-Python` generates daily study content based on learning context such as progress, weak points, and previous mistakes.
+`fe-daily-runner` generates daily study content based on learning context such as progress, weak points, and previous mistakes.
 
 The workflow:
 
@@ -91,7 +91,7 @@ The runner consumes question data through the Question Bank Runtime API rather t
 
 ### 4. Integration and Operations
 
-`FE-System` is responsible for operating these components as one platform.
+`FE-Study-System` is responsible for operating these components as one platform.
 
 It provides:
 
@@ -113,9 +113,9 @@ The normal deployment order is:
 ```text
 1. fe-question-bank-service
         ↓
-2. fe-siken-quiz-bot
+2. fe-quiz-app
         ↓
-3. FE-Daily-Runner-Python
+3. fe-daily-runner
 ```
 
 The Question Bank Runtime starts first because the other applications depend on its runtime API and assets.

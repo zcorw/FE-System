@@ -10,14 +10,14 @@ services:
 
   - name: FE-telegram-bot
     path: services/FE-telegram-bot
-    repo: git@github.com:zcorw/fe-siken-quiz-bot.git
+    repo: git@github.com:zcorw/fe-quiz-app.git
     branch: main
     role: telegram-web-edge-bot
     deploy_order: 2
 
   - name: FE-Daily-Runner
     path: services/FE-Daily-Runner
-    repo: git@github.com:zcorw/FE-Daily-Runner-Python.git
+    repo: git@github.com:zcorw/fe-daily-runner.git
     branch: feat/runtime-question-explanations
     role: daily-page-generator
     deploy_order: 3
